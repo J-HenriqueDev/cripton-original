@@ -91,7 +91,7 @@ class main(commands.AutoShardedBot):
             if message.author.bot:
                 return
             await message.add_reaction(":correto:571040855918379008")
-            await message.add_reaction("<:incorreto:571040727643979782>")
+            await message.add_reaction(":incorreto:571040727643979782")
 
         if message.content.lower().startswith(f"<@!{self.user.id}>") or message.content.lower().startswith(f"<@{self.user.id}>") :
             pref = database.buscar_prefixo(message.guild.id)
