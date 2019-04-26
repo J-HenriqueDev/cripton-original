@@ -80,7 +80,7 @@ class main(commands.AutoShardedBot):
             await asyncio.sleep(70)
 
     async def on_message(self, message):
-        canal = [568035468751667239,568933678282047490]
+        canal = [568035468751667239,568933678282047490,570908350481432587]
         """ Evento de message. Bloquear message de bots e messagens no dm e adicionar messagem ao mencionar o bot"""
         if message.author.bot:
             return
@@ -90,8 +90,8 @@ class main(commands.AutoShardedBot):
         if message.channel.id in canal:
             if message.author.bot:
                 return
-            await message.add_reaction(":correto:567782857678913547")
-            await message.add_reaction(":errado:567782857863593995")
+            await message.add_reaction(":correto:571040855918379008")
+            await message.add_reaction("<:incorreto:571040727643979782>")
 
         if message.content.lower().startswith(f"<@!{self.user.id}>") or message.content.lower().startswith(f"<@{self.user.id}>") :
             pref = database.buscar_prefixo(message.guild.id)
