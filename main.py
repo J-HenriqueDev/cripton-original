@@ -80,7 +80,7 @@ class main(commands.AutoShardedBot):
             await asyncio.sleep(70)
 
     async def on_message(self, message):
-        canal = [568035468751667239,568933678282047490,570908350481432587]
+        canal = [568035468751667239,568933678282047490,570908350481432587,571087828482523146]
         """ Evento de message. Bloquear message de bots e messagens no dm e adicionar messagem ao mencionar o bot"""
         if message.author.bot:
             return
