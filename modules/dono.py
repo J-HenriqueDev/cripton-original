@@ -17,7 +17,6 @@ class dono(commands.Cog):
 
     @commands.command()
     async def reload(self, ctx, *, cog: str = None):
-        print(f"RELOAD USADO POR : {ctx.author}")
         if not ctx.author.id in self.bot.staff:
             await ctx.send(
                 f"<:errado:567782857863593995>{ctx.author.mention} você não é um administrador para utilizar esse comando.",
@@ -31,8 +30,7 @@ class dono(commands.Cog):
             await ctx.send(f"{ctx.author.mention} **Módulo  invalido. Módulos disponiveis abaixo**\n```python\n{cog_list}\n```", delete_after=15)
             return
         try:
-            self.bot.unload_extension(f"modules.{cog}")
-            self.bot.load_extension(f"modules.{cog}")
+            self.bot.reload_extension(f"modules.{cog}"))
             embed = discord.Embed(
                 colour=0x00d200,
                 description=(f"**[Sucesso] O Modulo `{cog}` foi recarregado corretamente!**"))
@@ -44,10 +42,10 @@ class dono(commands.Cog):
                 description=(f"**[ERRO] O Modulo `{cog}` não foi recarregado corretamente**\n\n``{e}``"))
 
             await ctx.send(embed=embed, delete_after=20)
+            print(f"RELOAD USADO POR : {ctx.author}")
 
     @commands.command()
     async def game(self, ctx, *, status: str = ''):
-        print(f"GAME USADO POR : {ctx.author}")
         if not ctx.author.id in self.bot.staff:
             await ctx.send(
                 f"<:errado:567782857863593995>{ctx.author.mention} você não é um administrador para utilizar esse comando.",
@@ -60,12 +58,13 @@ class dono(commands.Cog):
         await self.bot.change_presence(activity=discord.Streaming(name=status, url=streamurl),
                                        status=discord.ActivityType.streaming)
         await ctx.send(f" **Status alterado com sucesso.**\n`Novo Status`\n*{status}*")
+        print(f"GAME USADO POR : {ctx.author}")
 
     @commands.cooldown(1, 1, commands.BucketType.user)
     @commands.guild_only()
     @commands.command()
     async def debug(self, ctx, *, args=None):
-        print(f"DEGUG USADO POR : {ctx.author}")
+        
         if not ctx.author.id in self.bot.staff:
             await ctx.send(
                 f"<:errado:567782857863593995>{ctx.author.mention} você não é um administrador para utilizar esse comando.",
@@ -98,6 +97,7 @@ class dono(commands.Cog):
             embed.add_field(name="Saida", value=python.format(type(e).__name__ + ': ' + str(e)), inline=True)
             embed.set_footer(text=self.bot.user.name + " © 2019", icon_url=self.bot.user.avatar_url_as())
             await ctx.send(embed=embed)
+            print(f"DEGUG USADO POR : {ctx.author}")
             return
 
 
