@@ -158,6 +158,8 @@ class eventos(commands.Cog):
                 time = str(timelocal.strftime("%H:%M:%S - %d/%m/20%y"))
                 embed.add_field(name="Horário", value=f"``{time}``", inline=True)
                 canal = self.bot.get_channel((serverdata["channel"]))
+                if canal is None:
+                    return
                 await canal.send(embed=embed)
 
 
@@ -197,6 +199,8 @@ class eventos(commands.Cog):
                     time = str(timelocal.strftime("%H:%M:%S - %d/%m/20%y"))
                     embed.add_field(name="Horário", value=f"``{time}``", inline=True)
                     canal = self.bot.get_channel((serverdata["channel"]))
+                    if canal is None:
+                        return
                     await canal.send(embed=embed)
 
 

@@ -77,6 +77,8 @@ class info(commands.Cog):
             time = str(timelocal.strftime("%H:%M:%S - %d/%m/20%y"))
             embed.add_field(name="Horário", value=f"``{time}``", inline=True)
             canal = message.guild.get_channel(self.canal)
+            if canal is None:
+                return
             await canal.send(embed=embed)
 
 
@@ -109,6 +111,8 @@ class info(commands.Cog):
                 time = str(timelocal.strftime("%H:%M:%S - %d/%m/20%y"))
                 embed.add_field(name="Horário", value=f"``{time}``", inline=True)
                 canal = before.guild.get_channel(self.canal)
+                if canal is None:
+                    return
                 await canal.send(embed=embed)
 
 
@@ -221,37 +225,39 @@ class info(commands.Cog):
     # ok
     @commands.Cog.listener()
     async def on_member_ban(self,guild, user):
-        server = guild 
-        moderator = "Indisponivel"
-        for x in await server.audit_logs(limit=1).flatten():
-            if x.action == discord.AuditLogAction.ban:
-                moderator = x.user
-        s = discord.Embed(description="o membro **{}** foi banido por  **{}**.".format(user.name, moderator), colour=0xf84b50,
-                          timestamp=datetime.now(pytz.timezone('America/Sao_Paulo')))
-        s.set_author(name=user, icon_url=user.avatar_url)
-        s.set_footer(text="ID: {}".format(user.id))
-        canal = self.bot.get_channel(self.canal)
-        if canal is None:
-            return
-        await canal.send(embed=s)
+        if user.bot == False:
+            server = guild 
+            moderator = "um staff desconhecido"
+            for x in await server.audit_logs(limit=1).flatten():
+                if x.action == discord.AuditLogAction.ban:
+                    moderator = x.user
+            s = discord.Embed(description="o membro **{}** foi banido por  **{}**.".format(user.name, moderator), colour=0xf84b50,
+                            timestamp=datetime.now(pytz.timezone('America/Sao_Paulo')))
+            s.set_author(name=user, icon_url=user.avatar_url)
+            s.set_footer(text="ID: {}".format(user.id))
+            canal = self.bot.get_channel(self.canal)
+            if canal is None:
+                return
+            await canal.send(embed=s)
 
 
     # ok
     @commands.Cog.listener()
     async def on_member_unban(self,guild, user):
-        server = guild
-        moderator = "Indisponivel"
-        for x in await server.audit_logs(limit=1).flatten():
-            if x.action == discord.AuditLogAction.unban:
-                moderator = x.user
-        s = discord.Embed(description="o usuário **{}** foi desbanido por  **{}**".format(user.name, moderator), colour=0xf84b50,
-                          timestamp=datetime.now(pytz.timezone('America/Sao_Paulo')))
-        s.set_author(name=user, icon_url=user.avatar_url)
-        s.set_footer(text="ID: {}".format(user.id))
-        canal = self.bot.get_channel(self.canal)
-        if canal is None:
-            return
-        await canal.send(embed=s)
+        if user.bot == False:
+            server = guild
+            moderator = "Indisponivel"
+            for x in await server.audit_logs(limit=1).flatten():
+                if x.action == discord.AuditLogAction.unban:
+                    moderator = x.user
+            s = discord.Embed(description="o usuário **{}** foi desbanido por  **{}**".format(user.name, moderator), colour=0xf84b50,
+                            timestamp=datetime.now(pytz.timezone('America/Sao_Paulo')))
+            s.set_author(name=user, icon_url=user.avatar_url)
+            s.set_footer(text="ID: {}".format(user.id))
+            canal = self.bot.get_channel(self.canal)
+            if canal is None:
+                return
+            await canal.send(embed=s)
 
     @commands.Cog.listener()
     async def on_guild_role_create(self,role):
@@ -318,6 +324,7 @@ class info(commands.Cog):
             if canal is None:
                 return
             await canal.send(embed=s)
+    
 
 
 def setup(bot):
