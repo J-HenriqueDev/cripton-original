@@ -30,7 +30,8 @@ class dono(commands.Cog):
             await ctx.send(f"{ctx.author.mention} **Módulo  invalido. Módulos disponiveis abaixo**\n```python\n{cog_list}\n```", delete_after=15)
             return
         try:
-            self.bot.reload_extension(f"modules.{cog}"))
+            self.bot.unload_extension(f"modules.{cog}")
+            self.bot.load_extension(f"modules.{cog}")
             embed = discord.Embed(
                 colour=0x00d200,
                 description=(f"**[Sucesso] O Modulo `{cog}` foi recarregado corretamente!**"))
