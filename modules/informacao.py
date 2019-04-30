@@ -7,11 +7,25 @@ import discord
 import requests
 
 
+def perms_check(role):
+    list_perms = ['empty']
+    for perm in role:
+        if perm[1] is True:
+            if 'empty' in list_perms:
+                list_perms = list()
+            list_perms.append(perm[0])
+    if 'empty' not in list_perms:
+        all_perms = ", ".join(list_perms)
+        return all_perms
+    else:
+        return "o cargo nao possui permissão"
+
 class informacao(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+
+    @commands.command(description='Mostra o meu ping',usage='c.ping')
     async def ping(self, ctx):
         embed = discord.Embed(title="🏓 Pong!",
                               description=f' No Momento estou com: **{round(self.bot.latency * 1000)}ms**.',
@@ -21,7 +35,7 @@ class informacao(commands.Cog):
         await ctx.send(embed=embed, delete_after=90)
 
     @commands.guild_only()
-    @commands.command()
+    @commands.command(description='Mostra todos os emojis que estão no servidor.',usage='c.emojis',aliases=['guildemoji'])
     async def emojis(self, ctx):
         server = ctx.message.guild
         emojis = [str(x) for x in server.emojis]
@@ -31,8 +45,8 @@ class informacao(commands.Cog):
         embed.set_footer(text="Cripton © 2019", icon_url=self.bot.user.avatar_url)
         await ctx.send(embed=embed, delete_after=70)
 
-    @commands.command()
-    async def pic(self, ctx, *, user: discord.Member = None):
+    @commands.command(description='envia a sua foto de perfil ou a de um usuário.',usage='c.avatar',aliases=['pic'])
+    async def avatar(self, ctx, *, user: discord.Member = None):
         if user is None:
             usuario = ctx.author.avatar_url
             texto = f"Olá {ctx.author.name}, está é sua imagem de perfil."
@@ -42,7 +56,7 @@ class informacao(commands.Cog):
 
         embed = discord.Embed(title=texto, color=0xF4CBD1)
         embed.set_image(url=usuario)
-        embed.set_footer(text=self.bot.user.name + " direitos resevados.")
+        embed.set_footer(text=self.bot.user.name+" © 2019", icon_url=self.bot.user.avatar_url_as())
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -67,11 +81,11 @@ class informacao(commands.Cog):
         embed.add_field(name="c° & f°", value=str(temp), inline=True)
         url = "https:" + str(js['current']['condition']["icon"])
         embed.set_thumbnail(url=url)
-        embed.set_footer(text="Climatempo 2018")
+        embed.set_footer(text=self.bot.user.name+" © 2019", icon_url=self.bot.user.avatar_url_as())
         await ctx.send(embed=embed)
 
     @commands.guild_only()
-    @commands.command()
+    @commands.command(description='Mostra algumas informações sobre mim.',usage='c.botinfo',aliases=['bot'])
     async def botinfo(self,ctx):
           mem = botstatus.get_memory()
           embed = discord.Embed(description="Olá {}, este e o perfil do {} e nele contém algumas informações.".format(ctx.author.name, self.bot.user.name),colour=0x00d200)
@@ -86,13 +100,13 @@ class informacao(commands.Cog):
           embed.add_field(name="<:guilds:565976828276113429> Servidores", value = '``'+str(len(self.bot.guilds))+' (shards '+"1"+')``', inline=True)
           embed.add_field(name="<:ping:565975875728703488> Lâtencia", value = '``{0:.2f}ms``'.format(self.bot.latency * 1000), inline=True)
           embed.add_field(name="<:cpu:565975875653337088> Cpu",value=f'``{botstatus.cpu_usage()}%``', inline=True)
-          embed.add_field(name="<:texto:565968741788155907> Prefixo",value='``' + database.buscar_prefixo(ctx.guild.id) + '``', inline=True)
+          #embed.add_field(name="<:texto:565968741788155907> Prefixo",value='``' + database.buscar_prefixo(ctx.guild.id) + '``', inline=True)
           #embed.add_field(name="<:ping:564890304839417887> Processador", value=f'``{botstatus.host_name()}``', inline=True)
           embed.set_footer(text=self.bot.user.name+" © 2019", icon_url=self.bot.user.avatar_url_as())
           await ctx.send(embed=embed)
     
     @commands.guild_only()
-    @commands.command()
+    @commands.command(description='Mostra todas as informações do seu servidor.',usage='c.serverinfo',aliases=['sinfo', 'guildinfo'])
     async def serverinfo(self, ctx):
            servidor = ctx.guild
            if servidor.icon_url_as(format="png") == "":
@@ -128,7 +142,7 @@ class informacao(commands.Cog):
 
 
     @commands.guild_only()
-    @commands.command()
+    @commands.command(description='Mostra as informações de um usuário.',usage='c.userinfo @TOBIAS',aliases=['uinfo', 'usuario'])
     async def userinfo(self, ctx, *, user: discord.Member = None):
            if user is None:
                usuario = ctx.author
@@ -179,7 +193,7 @@ class informacao(commands.Cog):
            await ctx.send(embed = embed)
 
     @commands.guild_only()
-    @commands.command()
+    @commands.command(description='Mostra as informações de um canal.',usage='c.channelinfo #canal',aliases=['canalinfo', 'cinfo'])
     async def channelinfo(self, ctx, *, num=None):
          if num is None:
             num = ctx.channel.id
@@ -241,6 +255,7 @@ class informacao(commands.Cog):
          embed.set_footer(text=self.bot.user.name+" © 2019", icon_url=self.bot.user.avatar_url_as())
          await ctx.send(embed = embed)
 
+    """
     @commands.command()
     async def help(self, ctx):
         embed = discord.Embed(colour=0x00d200, description="Olá {}, aqui contém todos os comandos do {}.".format(ctx.author.name, self.bot.user.name))
@@ -250,6 +265,86 @@ class informacao(commands.Cog):
         embed.add_field(name="<:cripton:564878721677525013> Cripton", value ="``botinfo``, ``ping``, ``config``", inline=True)
         #embed.add_field(name="<:search:564893705111076864> Pesquisa", value ="``image``, ``link``", inline=True)
         embed.set_footer(text=self.bot.user.name+" © 2019", icon_url=self.bot.user.avatar_url_as())
+        await ctx.send(embed=embed)
+    """
+
+    @commands.command(description='Listagem e informações de todos os comandos públicos lançados até o momento',usage='cu.ajuda',aliases=['help'])
+    async def ajuda(self, ctx, nome = None):
+        if nome:
+            comando = self.bot.get_command(nome)
+            if not comando:
+                return await ctx.send(f"fia da mae, **{ctx.author.name}**! Não foi possível encontrar um comando chamado **`{nome[:15]}`**.", delete_after=15)
+
+            nome = comando.name
+            desc = comando.description
+            uso = comando.usage
+            if not desc: desc = "não setei."
+            if not uso: uso = "não setei²"
+            if comando.aliases:
+                aliases = ', '.join([f"**`{alias}`**" for alias in comando.aliases])
+            else:
+                aliases = "`não setei³`"
+
+            em = discord.Embed(
+                colour=0x00d200
+            ).set_author(
+                icon_url=self.bot.user.avatar_url,
+                name="Informações do comando " + nome
+            ).set_thumbnail(
+                url=self.bot.user.avatar_url
+            ).set_footer(
+                icon_url=ctx.author.avatar_url,
+                text=ctx.author.name
+            ).add_field(
+                name="**Descrição**",
+                value=f"`{desc}`",
+                inline=False
+            ).add_field(
+                name="**Uso**",
+                value=f"`{uso}`",
+                inline=False
+            ).add_field(
+                name="**Abreviações**",
+                value=aliases,
+                inline=False
+            )
+
+            return await ctx.send(embed=em)
+    
+
+        em = discord.Embed(colour=0x00d200, description="Olá {}, aqui contém todos os comandos do {}.".format(ctx.author.name, self.bot.user.name))
+        em.set_author(name=f"{self.bot.user.name} | Comandos",icon_url=self.bot.user.avatar_url)
+        em.set_thumbnail(url=self.bot.user.avatar_url)
+        em.add_field(name="<:discord:565988914138054656> Discord", value ="``channelinfo``, ``serverinfo``, ``userinfo``", inline=True)
+        em.add_field(name="<:musica:565989217486897163> Música", value ="``play``, ``stop``, ``pause``, ``volume`` , ``seek``, ``queue``, ``np``, ``rework``", inline=True)
+        em.add_field(name="<:cripton:564878721677525013> Cripton", value ="``botinfo``, ``ping``, ``config``", inline=True)
+        await ctx.send(embed=em)
+
+    @commands.command()
+    async def roleinfo(self, ctx, *, role: discord.Role = None):
+        if not ctx.author.id in self.bot.staff:
+            await ctx.send(
+                f"<:errado:567782857863593995>{ctx.author.mention} você não é um administrador para utilizar esse comando.",
+                delete_after=15)
+            return
+        if role is None:
+            return await ctx.send('vc n especificou uma role')
+        embed = discord.Embed(color=role.color)
+        embed.set_author(name="Informações de Cargo:", icon_url=ctx.guild.icon_url)
+        embed.add_field(name="<:m_paper:570426272090685451> Nome:", value=f"``{role.name}``", inline=False)
+        embed.add_field(name="<:m_id:568141644214304818> ID:", value=f"``{role.id}``", inline=False)
+        mention = f"{role.mentionable}"
+        embed.add_field(name="<:m_mention:571127658239361044> Mencionável:", value=f"``{mention.replace('False','Não').replace('True', 'Sim')}``", inline=False)
+        embed.add_field(name="<:m_paint:571128739472211989> Cor:", value=f"``Hexadecimal: {role.color}``\n``RGB: {role.color.to_rgb()}``", inline=False)
+        separado = f"{role.hoist}"
+        embed.add_field(name="<:m_position:571167703327309842> Posição do Cargo:", value=f"``{role.position}º``", inline=False)
+        embed.add_field(name="<:m_tesoura:571165633908178966> Separado dos Membros:", value=f"``{separado.replace('True','Sim').replace('False','Não')}``", inline=False)
+        embed.add_field(name="<:m_calendar:570391810468347907> Data de Criação:", value=f"``{role.created_at.__format__('%d/%m/%Y às %H:%M')}``", inline=False)
+        embed.add_field(name="<:m_pessoa:571169645315227648> Membro(s) com o cargo:", value=f"``{len(role.members)}``", inline=False)
+        perm = f"{perms_check(role.permissions)}"
+        embed.add_field(name="<:m_paper:570426272090685451> Permissões:", value=f"``{perm.replace('use_voice_activation','Usar detecção de voz').replace('add_reactions','Adicionar reações').replace('administrator','Administrador').replace('attach_files','Anexar arquivos').replace('ban_members','Banir membros').replace('change_nickname','Mudar apelido').replace('connect','Conectar').replace('create_instant_invite','Criar um convite instatâneo').replace('deafen_members','Desativar áudio de membros').replace('embed_links','Inserir Links').replace('external_emojis','Emojis externos').replace('kick_members','Expulsar membros').replace('manage_channels','Gerenciar canais').replace('manage_emojis','Gerenciar emojis').replace('manage_guild','Gerenciar o servidor').replace('manage_messages','Gerenciar Mensagens').replace('manage_nicknames','Gerenciar apelidos').replace('manage_roles','Gerenciar cargos').replace('manage_webhooks','Gerenciar Webhooks').replace('mention_everyone','Mencionar todos').replace('move_members','Mover membros').replace('mute_members','Silenciar membros').replace('read_message_history','Ler histórico de mensagens').replace('read_messages','Ler mensagens').replace('send_messages','Enviar mensagens').replace('send_tts_messages','Enviar mensagem TTS').replace('speak','Falar').replace('view_audit_log','Ver registro de auditoria')}``", inline=False)
+        embed.set_thumbnail(url='https://htmlcolors.com/color-image/{}.png'.format(str(role.color).strip("#")))
+        embed.set_footer(text=f'{role.name}', icon_url='https://htmlcolors.com/color-image/{}.png'.format(str(role.color).strip("#")))
         await ctx.send(embed=embed)
 
 def setup(bot):
