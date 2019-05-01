@@ -278,12 +278,12 @@ class informacao(commands.Cog):
             nome = comando.name
             desc = comando.description
             uso = comando.usage
-            if not desc: desc = "não setei."
-            if not uso: uso = "não setei²"
+            if not desc: desc = "Descrição não definida."
+            if not uso: uso = "Modo de uso não definido."
             if comando.aliases:
                 aliases = ', '.join([f"**`{alias}`**" for alias in comando.aliases])
             else:
-                aliases = "`não setei³`"
+                aliases = "Nenhuma abreviação."
 
             em = discord.Embed(
                 colour=0x00d200
@@ -315,36 +315,33 @@ class informacao(commands.Cog):
         em = discord.Embed(colour=0x00d200, description="Olá {}, aqui contém todos os comandos do {}.".format(ctx.author.name, self.bot.user.name))
         em.set_author(name=f"{self.bot.user.name} | Comandos",icon_url=self.bot.user.avatar_url)
         em.set_thumbnail(url=self.bot.user.avatar_url)
-        em.add_field(name="<:discord:565988914138054656> Discord", value ="``channelinfo``, ``serverinfo``, ``userinfo``", inline=True)
-        em.add_field(name="<:musica:565989217486897163> Música", value ="``play``, ``stop``, ``pause``, ``volume`` , ``seek``, ``queue``, ``np``, ``rework``", inline=True)
+        em.add_field(name="<:discord:565988914138054656> Discord", value ="``channelinfo``, ``serverinfo``, ``userinfo``,``roleinfo``", inline=True)
+        em.add_field(name="<:musica:565989217486897163> Música", value ="``play``, ``stop``, ``pause``, ``volume`` , ``seek``, ``queue``, ``np``, ``rework``,``spotify``", inline=True)
         em.add_field(name="<:cripton:564878721677525013> Cripton", value ="``botinfo``, ``ping``, ``config``", inline=True)
+        em.set_footer(text=self.bot.user.name+" © 2019", icon_url=self.bot.user.avatar_url_as())
         await ctx.send(embed=em)
 
-    @commands.command()
+    @commands.command(description='Mostra as informações de um cargo',usage='c.roleinfo dj',aliases=['rinfo'])
     async def roleinfo(self, ctx, *, role: discord.Role = None):
-        if not ctx.author.id in self.bot.staff:
-            await ctx.send(
-                f"<:errado:567782857863593995>{ctx.author.mention} você não é um administrador para utilizar esse comando.",
-                delete_after=15)
-            return
         if role is None:
-            return await ctx.send('vc n especificou uma role')
-        embed = discord.Embed(color=role.color)
-        embed.set_author(name="Informações de Cargo:", icon_url=ctx.guild.icon_url)
-        embed.add_field(name="<:m_paper:570426272090685451> Nome:", value=f"``{role.name}``", inline=False)
-        embed.add_field(name="<:m_id:568141644214304818> ID:", value=f"``{role.id}``", inline=False)
+            return await ctx.send(f'**{ctx.author.name}** você não mencionou um cargo.')
+        criado_em = str(role.created_at.strftime("%H:%M:%S - %d/%m/20%y"))
+        embed = discord.Embed(color=0x00d200)
+        embed.set_author(name="Informação do cargo", icon_url=ctx.author.avatar_url_as())
+        embed.add_field(name="<:tag:565975875749675039> Nome:", value="``"+str(role.name)+"``")
+        embed.add_field(name="<:ip:565968375772217354> ID:", value=f"``"+str(role.id)+"``")
         mention = f"{role.mentionable}"
-        embed.add_field(name="<:m_mention:571127658239361044> Mencionável:", value=f"``{mention.replace('False','Não').replace('True', 'Sim')}``", inline=False)
-        embed.add_field(name="<:m_paint:571128739472211989> Cor:", value=f"``Hexadecimal: {role.color}``\n``RGB: {role.color.to_rgb()}``", inline=False)
+        embed.add_field(name="<:mention:573230888029126657> Mencionável:", value=f"``{mention.replace('False','Não').replace('True', 'Sim')}``")
+        embed.add_field(name="<:cor:573231255466934274> Cor:", value="``"+str(role.colour)+"``")
         separado = f"{role.hoist}"
-        embed.add_field(name="<:m_position:571167703327309842> Posição do Cargo:", value=f"``{role.position}º``", inline=False)
-        embed.add_field(name="<:m_tesoura:571165633908178966> Separado dos Membros:", value=f"``{separado.replace('True','Sim').replace('False','Não')}``", inline=False)
-        embed.add_field(name="<:m_calendar:570391810468347907> Data de Criação:", value=f"``{role.created_at.__format__('%d/%m/%Y às %H:%M')}``", inline=False)
-        embed.add_field(name="<:m_pessoa:571169645315227648> Membro(s) com o cargo:", value=f"``{len(role.members)}``", inline=False)
+        embed.add_field(name="<:canais:565968375314907146> Posição do Cargo:", value=f"``{role.position}º``")
+        embed.add_field(name="<:separado:573232267888164865> Separado dos Membros:", value=f"``{separado.replace('True','Sim').replace('False','Não')}``")
+        embed.add_field(name="<:notas:565968375898046464> Data de Criação:", value=f"``"+str(criado_em)+"``")
+        embed.add_field(name="<:pessoas:565968375847845908> Membro(s) com o cargo:", value=f"``{len(role.members)}``")
         perm = f"{perms_check(role.permissions)}"
-        embed.add_field(name="<:m_paper:570426272090685451> Permissões:", value=f"``{perm.replace('use_voice_activation','Usar detecção de voz').replace('add_reactions','Adicionar reações').replace('administrator','Administrador').replace('attach_files','Anexar arquivos').replace('ban_members','Banir membros').replace('change_nickname','Mudar apelido').replace('connect','Conectar').replace('create_instant_invite','Criar um convite instatâneo').replace('deafen_members','Desativar áudio de membros').replace('embed_links','Inserir Links').replace('external_emojis','Emojis externos').replace('kick_members','Expulsar membros').replace('manage_channels','Gerenciar canais').replace('manage_emojis','Gerenciar emojis').replace('manage_guild','Gerenciar o servidor').replace('manage_messages','Gerenciar Mensagens').replace('manage_nicknames','Gerenciar apelidos').replace('manage_roles','Gerenciar cargos').replace('manage_webhooks','Gerenciar Webhooks').replace('mention_everyone','Mencionar todos').replace('move_members','Mover membros').replace('mute_members','Silenciar membros').replace('read_message_history','Ler histórico de mensagens').replace('read_messages','Ler mensagens').replace('send_messages','Enviar mensagens').replace('send_tts_messages','Enviar mensagem TTS').replace('speak','Falar').replace('view_audit_log','Ver registro de auditoria')}``", inline=False)
+        embed.add_field(name="<:cadeado:565968375369695251> Permissões:", value=f"``{perm.replace('use_voice_activation','Usar detecção de voz').replace('add_reactions','Adicionar reações').replace('administrator','Administrador').replace('attach_files','Anexar arquivos').replace('ban_members','Banir membros').replace('change_nickname','Mudar apelido').replace('connect','Conectar').replace('create_instant_invite','Criar um convite instatâneo').replace('deafen_members','Desativar áudio de membros').replace('embed_links','Inserir Links').replace('external_emojis','Emojis externos').replace('kick_members','Expulsar membros').replace('manage_channels','Gerenciar canais').replace('manage_emojis','Gerenciar emojis').replace('manage_guild','Gerenciar o servidor').replace('manage_messages','Gerenciar Mensagens').replace('manage_nicknames','Gerenciar apelidos').replace('manage_roles','Gerenciar cargos').replace('manage_webhooks','Gerenciar Webhooks').replace('mention_everyone','Mencionar todos').replace('move_members','Mover membros').replace('mute_members','Silenciar membros').replace('read_message_history','Ler histórico de mensagens').replace('read_messages','Ler mensagens').replace('send_messages','Enviar mensagens').replace('send_tts_messages','Enviar mensagem TTS').replace('speak','Falar').replace('view_audit_log','Ver registro de auditoria')}``")
         embed.set_thumbnail(url='https://htmlcolors.com/color-image/{}.png'.format(str(role.color).strip("#")))
-        embed.set_footer(text=f'{role.name}', icon_url='https://htmlcolors.com/color-image/{}.png'.format(str(role.color).strip("#")))
+        embed.set_footer(text=self.bot.user.name+" © 2019", icon_url=self.bot.user.avatar_url_as())
         await ctx.send(embed=embed)
 
 def setup(bot):
