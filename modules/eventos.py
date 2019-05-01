@@ -118,7 +118,9 @@ class eventos(commands.Cog):
         if isinstance(error, discord.ext.commands.errors.CommandNotFound):
             pass
 
-        elif isinstance(error, discord.ext.commands.MissingPermissions):
+        elif isinstance(error, commands.BotMissingPermissions):
+            perms = '\n'.join([f"**`{perm.upper()}`**" for perm in error.missing_perms])
+            await ctx.send(f"**{ctx.author.name}**, eu preciso das seguintes permissões para poder executar o comando **`{ctx.invoked_with}`** nesse servidor:\n\n{perms}", delete_after=30)
             print("sem perm")
         elif isinstance(error, discord.ext.commands.errors.CheckFailure):
             print("erro ao checar")
