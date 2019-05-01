@@ -344,5 +344,6 @@ class informacao(commands.Cog):
         embed.set_footer(text=self.bot.user.name+" © 2019", icon_url=self.bot.user.avatar_url_as())
         await ctx.send(embed=embed)
 
+
 def setup(bot):
     bot.add_cog(informacao(bot))

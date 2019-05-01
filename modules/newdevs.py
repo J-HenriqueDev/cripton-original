@@ -10,6 +10,7 @@ class info(commands.Cog):
         self.bot = bot
         self.cooldown = []
         self.canal = 571047885509230614
+        self.spam = 571016071209811972
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -325,6 +326,47 @@ class info(commands.Cog):
                 return
             await canal.send(embed=s)
     
+
+    @commands.Cog.listener()
+    async def on_guild_channel_pins_update(self, channel, last_pin):
+        if last_pin is not None:
+            fix_ = 'fixada'
+        else:
+            fix_ = 'desfixada'
+        embed = discord.Embed(
+            title=f":bangbang: **Uma mensagem foi {fix_}**",
+            color=0xe6842b,
+            description=f"**Canal de texto:** <#{channel.id}>",
+            timestamp=datetime.now(pytz.timezone('America/Sao_Paulo')))
+        canal = self.bot.get_channel(self.canal)
+        if canal is None:
+            return
+        await canal.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_member_update(self,before,after):
+        if before.avatar != after.avatar:
+            
+            if 'a_' in before.avatar:
+                format_1 = '.gif'
+            else:
+                format_1 = '.webp'
+            if 'a_' in after.avatar:
+                format_2 = '.gif'
+            else:
+                format_2 = '.webp'
+            to_send = discord.Embed(
+                title=":star2: **Avatar de usuário alterado**",
+                color=0xe6842b,
+                description=f"**Membro:** {before.name}")
+            to_send.set_thumbnail(url=f'https://cdn.discordapp.com/avatars/{before.id}/{before.avatar}'
+                                      f'{format_1}?size=1024')
+            to_send.set_image(url=f'https://cdn.discordapp.com/avatars/{after.id}/{after.avatar}'
+                                  f'{format_2}?size=1024')
+            canal = self.bot.get_channel(self.spam)
+            if canal is None:
+                return
+            await canal.send(embed=to_send)
 
 
 def setup(bot):

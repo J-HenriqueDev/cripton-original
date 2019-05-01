@@ -82,9 +82,9 @@ class eventos(commands.Cog):
             else:
                 s.set_thumbnail(
                     url="https://cdn.discordapp.com/attachments/344091594972069888/396285725605363712/no_server_icon.png")
-            await self.bot.get_channel(567051240886894674).send(embed=s)
+            await self.bot.get_channel(568040417216692265).send(embed=s)
         except Exception as e:
-            await self.bot.get_channel(567052151499784203).send(e)
+            await self.bot.get_channel(568040417216692265).send(e)
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
@@ -108,9 +108,9 @@ class eventos(commands.Cog):
             else:
                 s.set_thumbnail(
                     url="https://cdn.discordapp.com/attachments/344091594972069888/396285725605363712/no_server_icon.png")
-            await self.bot.get_channel(567051240886894674).send(embed=s)
+            await self.bot.get_channel(568040417216692265).send(embed=s)
         except Exception as e:
-            await self.bot.get_channel(567052151499784203).send(e)
+            await self.bot.get_channel(568040417216692265).send(e)
 
     # erro handling
     @commands.Cog.listener()
@@ -124,8 +124,9 @@ class eventos(commands.Cog):
             print("erro ao checar")
         elif isinstance(error, discord.ext.commands.CommandOnCooldown):
             print(f"cooldown em ({ctx.command})")
-        elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-            print(f"sem argumentos no comando ({ctx.command})")
+        elif isinstance(error, (commands.BadArgument, commands.BadUnionArgument, commands.MissingRequiredArgument)):
+            uso = ctx.command.usage if ctx.command.usage else "Não especificado."
+            await ctx.send(f"**{ctx.author.name}**,parece que você usou o comando **`{ctx.command.name}`** de forma errada!\nUso correto: **`{uso}`**", delete_after=45)
         else:
             print(error)
 
