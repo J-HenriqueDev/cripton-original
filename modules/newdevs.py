@@ -81,11 +81,10 @@ class info(commands.Cog):
     # Essa é uma funcão para setar um cooldown no membro
     @commands.cooldown(1, 10800, commands.BucketType.user)
     async def rep(self, ctx, membro: discord.Member):
-        """ Vamos bloquer pontos para bots """
         if membro.bot is True:
             await ctx.send(f"**Não posso adiconar pontos  de reputação para um bot!**")
             return
-        # Vamos bloquear para adicionar pontos pra si propio
+        
         if ctx.message.author.id == membro.id:
             await ctx.send(f"**Voçê não pode adicionar pontos para si mesmo!**")
             return
@@ -100,7 +99,7 @@ class info(commands.Cog):
 
     @rep.error
     async def rep_error(self, ctx, error):
-        """ Tratamento de erros do comando rep. Vamos colocar um mensagem quando o usuário estiver em colldown"""
+      
         if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
             await ctx.send(f" **Exemplo** `{self.bot.prefixo}rep [Nome ou id do usuario]`")
             return
