@@ -1,7 +1,9 @@
 import discord
 from datetime import datetime
+from config import database
 import pytz
 from utils.role import cargos
+from utils.contador import numero_para_emoji
 from discord.ext import commands
 from asyncio import sleep
 
@@ -55,6 +57,93 @@ class info(commands.Cog):
                     self.cooldown.append(payload.user_id)
                     self.cooldown.remove(payload.user_id)
                 break
+    """
+    @commands.group(invoke_without_command=True)
+    @commands.has_permissions(manage_guild=True)
+    async def aceitar(self, ctx):
+        config_embed = discord.Embed(color=0xffff00,
+            title=f"**aceitar bot**", description=
+            f"c.aceitar botjs\n"
+            "c.aceitar botpy\n"
+            "c.aceitar botjs"
+
+        )
+        config_embed.set_footer(text=f"{self.bot.user.name}", icon_url=self.bot.user.avatar_url)
+        await ctx.send(embed=config_embed)
+
+    @aceitar.error
+    async def config_error(self, ctx, error):
+        if isinstance(error, discord.ext.commands.errors.MissingPermissions):
+            await ctx.send(f'')
+            return
+
+    @commands.command()
+    # Essa é uma funcão para setar um cooldown no membro
+    @commands.cooldown(1, 10800, commands.BucketType.user)
+    async def rep(self, ctx, membro: discord.Member):
+        """ Vamos bloquer pontos para bots """
+        if membro.bot is True:
+            await ctx.send(f"**Não posso adiconar pontos  de reputação para um bot!**")
+            return
+        # Vamos bloquear para adicionar pontos pra si propio
+        if ctx.message.author.id == membro.id:
+            await ctx.send(f"**Voçê não pode adicionar pontos para si mesmo!**")
+            return
+        rep = 1
+        database.verificar(membro.id)
+        database.setar_reputacao(membro.id,rep)
+        atual = database.buscar(membro.id,'reputacao')
+        await ctx.send(
+            f" **{ctx.message.author}** Concendeu um ponto de reputação para **{membro}**\n"
+            f"Reputação atual `{atual}`  pontos. "
+        )
+
+    @rep.error
+    async def rep_error(self, ctx, error):
+        """ Tratamento de erros do comando rep. Vamos colocar um mensagem quando o usuário estiver em colldown"""
+        if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+            await ctx.send(f" **Exemplo** `{self.bot.prefixo}rep [Nome ou id do usuario]`")
+            return
+        if isinstance(error, discord.ext.commands.CommandOnCooldown):
+            min, sec = divmod(error.retry_after, 60)
+            h, min = divmod(min, 60)
+            if min == 0.0 and h == 0:
+                await ctx.send(f' **Espere `{round(sec)}` segundos . Para enviar pontos novamente.**')
+            else:
+                await ctx.send(f"**Espere `{round(h)}` horas `{round(min)}` minutos  e `{round(sec)}` segundos. Para enviar pontos novamente**")
+
+    @commands.command()
+    async def reps(self, ctx, membro: discord.Member):
+        atual = database.buscar(membro.id,'reputacao')
+        if membro is None:
+            membro = ctx.author
+            titulo = "Olá {}, você tem {} reps.".format(membro.name,atual)
+        else:
+            membro = membro
+            titulo = "Olá {}, {} tem `{}` reps.".format(ctx.author.name, membro.name,atual)
+        
+        embed = discord.Embed(description=titulo,colour=0x00d200)
+        await ctx.send(embed=embed)
+    """
+    @commands.Cog.listener()
+    async def on_member_join(self,member):
+        if member.guild.id != 570906068277002271:
+            return
+        membros = numero_para_emoji(member.guild.member_count)
+        chat_dev = member.guild.get_channel(570908352000032798)
+        await chat_dev.edit(topic=f"<:newDevs:573629564627058709> Membros: {membros}")
+        if not member.bot:
+            return
+        cargo_bot_pendente = member.guild.get_role(573625613676576779)
+        await member.add_roles(cargo_bot_pendente, reason=f'Bot {member} adicionado,cargo pendende adicionado [evitando raid]')
+
+    @commands.Cog.listener()
+    async def on_member_remove(self,member):
+        if member.guild.id != 570906068277002271:
+            return
+        membros = numero_para_emoji(member.guild.member_count)
+        chat_dev = member.guild.get_channel(570908352000032798)
+        await chat_dev.edit(topic=f"<:newDevs:573629564627058709> Membros: {membros}")
 
     @commands.Cog.listener()
     async def on_message_delete(self,message):
@@ -344,7 +433,7 @@ class info(commands.Cog):
         await canal.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_member_update(self,before,after):
+    async def on_user_update(self,before,after):
         if before.avatar != after.avatar:
             
             if 'a_' in before.avatar:
