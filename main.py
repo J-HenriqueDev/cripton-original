@@ -46,16 +46,6 @@ class main(commands.AutoShardedBot):
         canale = self.get_channel(568233418299801615)
         log_ready = self.get_channel(568040355933716500)
         await log_ready.send(f"**Cripton On | Modulos: ok ** `{self.carregados}` **erros** `{self.falhas}`")
-        print('---'*30)
-        print('  _____      _       _              ')
-        print(' / ____|    (_)     | |             ')
-        print('| |     _ __ _ _ __ | |_ ___  _ __  ')
-        print("| |    | '__| | '_ \| __/ _ \| '_ \ ")
-        print('| |____| |  | | |_) | |_ (_) | | | |')
-        print(' \_____|_|  |_| .__/ \__\___/|_| |_|')
-        print('            | |                     ')
-        print('            |_|                     ')
-        print('---'*30)
         print(f"[OK] - {self.user.name} ({self.user.id}) - (Status - Online)")
         while True:
             await self.change_presence(
