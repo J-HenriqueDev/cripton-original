@@ -111,7 +111,7 @@ class eventos(commands.Cog):
             await self.bot.get_channel(568040417216692265).send(embed=s)
         except Exception as e:
             await self.bot.get_channel(568040417216692265).send(e)
-
+    """
     # erro handling
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -131,7 +131,8 @@ class eventos(commands.Cog):
             await ctx.send(f"**{ctx.author.name}**,parece que você usou o comando **`{ctx.command.name}`** de forma errada!\nUso correto: **`{uso}`**", delete_after=45)
         else:
             print(error)
-
+    """
+    
     @commands.Cog.listener()
     async def on_message_delete(self,message):
         """ Evento de message delete"""
