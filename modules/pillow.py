@@ -33,11 +33,11 @@ class bemvindo(commands.Cog):
             thumb = Image.open(BytesIO(url.content))
             thumb = thumb.resize((245, 245));
             bigsize = (thumb.size[0] * 3, thumb.size[1] * 3)
-            mask = Image.new('L', bigsize, 0)
-            draw = ImageDraw.Draw(mask)
-            draw.ellipse((0, 0) + bigsize, fill=255)
-            mask = mask.resize(thumb.size, Image.ANTIALIAS)
-            thumb.putalpha(mask)
+            #mask = Image.new('L', bigsize, 0)
+            #draw = ImageDraw.Draw(mask)
+            #draw.ellipse((0, 0) + bigsize, fill=255)
+            #mask = mask.resize(thumb.size, Image.ANTIALIAS)
+            #thumb.putalpha(mask)
 
             output = ImageOps.fit(thumb, mask.size, centering=(0.5, 0.5))
             output.putalpha(mask)
